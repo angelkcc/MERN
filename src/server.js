@@ -86,3 +86,36 @@ app.use("/categories", categoryRoutes);
 // departments crud
 // teachers  crud
 // class & sections crud
+
+//REST API
+//? REST-> Representational State Transfer (used to design web services)
+//? API -> Application Programming Interface
+
+//1. client and server architecture
+//2. stateless communication (each request from client to server must contain all the information needed to understand and process the request)
+//3. uniform interface (standardized way to communicate between client and server)
+     //post/users -> create user
+     //get/users -> get all users make it uniform
+     //dont define it like get/getAllUsers[bad practice]--use noun not verb
+
+//4. send meaningful status codes in response
+//100-199 informational
+//200-299 success
+//300-399 redirection
+//400-499 client error
+//500-599 server error
+
+//200-> OK
+//201-> Created
+//204-> No Content
+//
+//400-> Bad Request
+//401-> Unauthorized
+//403-> Forbidden
+//404-> Not Found
+//
+//500-> Internal Server Error
+//502-> Bad Gateway
+
+//5. use meaningful http methods for different operations
+//6. layered architecture (client-server architecture, server-server architecture, caching, load balancing, etc.)git
