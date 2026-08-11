@@ -20,7 +20,7 @@ export const getAllUsers = (req, res) => {
   console.log(req.query);
   // find all users form db
   // res.send("<h1>All users list</h1>");
-  res.json({
+  res.status(200).json({
     message: "All users fetched",
     success: true,
     status: "success",
@@ -35,7 +35,7 @@ export const getUserById = (req, res) => {
   const user=users.find((user)=>user._id===Number(id));
   if(!user)
   {
-    res.json({
+    res.status(404).json({
        message: `user:${id} not found`,
        status: "fail",
        success: false,
@@ -63,7 +63,7 @@ export const createUser = (req, res) => {
 
   users.push(user);
 
-  res.json({
+  res.status(201).json({
     data: user,
     message: "user created",
     status: "success",
@@ -77,7 +77,7 @@ export const updateUser = (req, res) => {
   const { userId } = req.params;
 
   // res.send(`<h1>User: ${userId} updated</h1>`);
-  res.json({
+  res.status(201).json({
     message: `user: ${userId} updated`,
     success: true,
     status: "success",
@@ -91,7 +91,7 @@ export const updateUser = (req, res) => {
 export const deleteUser = (req, res) => {
   const { id } = req.params;
   // res.send(`<h1>User:${id} deleted</h1>`);
-  res.json({
+  res.status(201).json({
     message: `user: ${id} deleted`,
     success: true,
     status: "success",

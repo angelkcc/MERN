@@ -118,4 +118,17 @@ app.use("/categories", categoryRoutes);
 //502-> Bad Gateway
 
 //5. use meaningful http methods for different operations
-//6. layered architecture (client-server architecture, server-server architecture, caching, load balancing, etc.)git
+//6. layered architecture (client-server architecture, server-server architecture, caching, load balancing, etc.)
+//7.code on demand
+//8. everything is resource (resource based architecture) => noun based architecture (produts,users,categories)
+//9. endpoint/path/route
+//10. uri: /users
+//11. url: http://example.com/users?name=john&page=1&limit=10&sort=desc
+
+//RESTful api-- it follows all the principles of REST architecture
+
+//RE-> resource are represented using standard format like json, xml, html[usually json]
+//S-> current state of the resources [users,products,categories]
+//T->represented resource transferred between client and server
+
+//rest api is an architectural principles that are used to design web apis that allows different to communicate over http
