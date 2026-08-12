@@ -1,18 +1,9 @@
 import http, { get } from "http";
 import express from "express";
-import { getAllUsers } from "./controllers/users.js";
-import { getUserById } from "./controllers/users.js";
-import { createUser } from "./controllers/users.js";
-import { updateUser } from "./controllers/users.js";;
-import { deleteUser } from "./controllers/users.js";
-import { createProduct} from "./controllers/products.js";
-import { updateProduct } from "./controllers/products.js";
-import { deleteProduct } from "./controllers/products.js";
+import mongoose from "mongoose";
 import userRoutes from "./routes/user.routes.js";
 import productRoutes from "./routes/products.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
-import { getAllProducts, getProductById } from "./controllers/products.js";
-import { getAllCategories, getCategoryById, createCategory, updateCategory, deleteCategory } from "./controllers/category.js";
 //params query body id field most necessary for crud operation
 const PORT = 8080;
 
@@ -22,6 +13,20 @@ const app = express();
 //* creating http server
 // const server = http.createServer(handler);
 const server = http.createServer(app);
+
+//*connect database
+//connect returns promise 
+mongoose.connect("mongodb://localhost:27017",{
+  dbName:"team_18",
+  autoCreate:true,
+}).
+then(()=>{
+  console.log("database connected");
+})
+.catch((error)=>{
+  console.log("database connection failed",error);
+});
+ //or we can directly do /dbname in url
 //? express app -> request handler
 // post / -> handler
 
@@ -132,3 +137,10 @@ app.use("/categories", categoryRoutes);
 //T->represented resource transferred between client and server
 
 //rest api is an architectural principles that are used to design web apis that allows different to communicate over http
+
+//MONGO DB
+//sql->no sql
+//database->database
+//table->collection
+//row->document
+//column->field
