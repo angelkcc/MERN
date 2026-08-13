@@ -2,38 +2,6 @@ import mongoose from "mongoose";
 
 let users=[];
 
-//schema
-//new mongoose.Schema(definition, options)
-
-const userSchema= new mongoose.Schema({
-  full_name:{
-    type:String,
-    required:true,
-    trim:true,
-    minLength:3,
-  },
-  email:{
-    type:String,
-    required:true,
-    unique:true,
-},
-password:{
-    type:String,
-    required:true,
-},
-role:{
-    type:String,
-    enum:["admin","user"],
-    default:"user",
-},
-},
-{ timestamps:true,}
-);
-
-//creating collection model
-const User = mongoose.model("user",userSchema); 
-
-
 
 export const getAllUsers = async (req, res) => {
   try{
@@ -137,7 +105,7 @@ export const updateUser = async(req, res) => {
   } catch(error)
   {
     res.status(500).json({
-      message: "Internal server error",
+      message: "Duplicate email found",
       success: false,
       status: "error",
       data: null,

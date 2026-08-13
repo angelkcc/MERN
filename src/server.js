@@ -14,6 +14,7 @@ const app = express();
 // const server = http.createServer(handler);
 const server = http.createServer(app);
 
+
 //*connect database
 //connect returns promise 
 mongoose.connect("mongodb://localhost:27017",{
@@ -38,6 +39,38 @@ app.use(express.json()); //raw data =>parse[js obj]=>req.body={}
   res.send("<h1>Hello form Express server</h1>");
 });*/
 
+//middleware
+const middleware1=(req,res,next)=>{
+  console.log("middleware1 is working",req.path); //req path is for current request path
+  next();
+}; 
+app.use(middleware1);
+app.use((req,res,next)=>{
+  console.log("middleware2 is working");
+ req.user={
+    name:"angel"
+  }
+  next();
+});
+app.use((req,res,next)=>{
+  console.log("middleware3 is working");
+  console.log("user name is",req.user);
+  next();
+});
+app.use((req,res,next)=>{
+  console.log("middleware4 is working");
+  console.log("user name is",req.user);
+  if(!req.user){
+    res.status(401).json({
+      message:"unauthorized user",
+      success:false,
+    });
+  } else {
+    next();
+  }
+});
+
+
 //while routing there should not be duplicate routes, if there is duplicate route then the first route will be executed and the second route will be ignored
 //express routing
 app.get("/", (req, res) => {
@@ -48,6 +81,7 @@ app.get("/", (req, res) => {
     data: null,
   });
 });
+
 
 
 //* listening on port
@@ -144,3 +178,22 @@ app.use("/categories", categoryRoutes);
 //table->collection
 //row->document
 //column->field
+
+//middleware-> middleware is a function that is in between the request and response cycle.
+//req,res obj and next function are passed to the middleware function 
+//req->mid1->mid2->mid3->controller->res
+//middleware executes any code/logic
+//it can also modify req and res obj
+//it can call next middleware
+//can end req-res cycle by sending response to client in middle of anything
+
+//why we need middleware
+//to reuse the code and to avoid code duplication
+//before it was: req->controller[api+auth]
+//auth-mid=>auth
+//now it becomes:req->auth-mid->controller[api] (the authorization logic is moved to middleware and the controller is only responsible for api logic)
+
+//types of middleware
+//1. application level middleware
+//2. route level middleware
+//3. error handler

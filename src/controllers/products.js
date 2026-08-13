@@ -1,3 +1,4 @@
+
 export const getAllProducts = (req, res) => {
   // find all products form db
   res.send("<h1>All Products list</h1>");
