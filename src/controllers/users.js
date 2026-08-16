@@ -1,4 +1,6 @@
+
 import mongoose from "mongoose";
+import User from "../models/user.model.js";
 
 let users=[];
 
@@ -25,7 +27,7 @@ export const getAllUsers = async (req, res) => {
   
 };
 
-export const getUserById = async (req, res) => {
+export const getUserById = async (req, res,next) => {
   try{
     const id = req.params.id;
   // find user by id  form db
@@ -35,11 +37,10 @@ export const getUserById = async (req, res) => {
   const user= await User.findOne({_id:id});
   if(!user)
   {
-    res.status(404).json({
-       message: `user:${id} not found`,
-       status: "fail",
-       success: false,
-       data: null,
+    next({
+      message:`user:${id} not found`,
+      statusCode:404,
+      status:"fail"
     });
     return;
   }
@@ -50,24 +51,46 @@ export const getUserById = async (req, res) => {
     data: user,
   });
 }catch(error){
-    res.status(500).json({
-      message: "Internal server error",
-      success: false,
-      status: "error",
-      data: null,
-    });
+    next(error);
+
   }
   
 };
 
-export const createUser =async (req, res) => {
+export const createUser =async (req, res,next) => {
   try{
    const{full_name, email, password}= req.body;
-  //const user = {
-    //_id: users.length + 1,
-    //...req.body,
-  //};
-  // users.push(user);
+  //validate input
+  if(!full_name)
+  {
+    next({
+      message:"full_name is required",
+      status:"fail",
+      success:false,
+      statusCode:400,
+    });
+    return;
+  }
+  if(!email)
+  {
+    next({
+      message:"email is required",
+      status:"fail",
+      success:false,
+      statusCode:400,
+    });
+    return;
+  }
+  if(!password)
+  {
+    next({
+      message:"password is required",
+      status:"fail",
+      success:false,
+      statusCode:400,
+    });
+    return;
+  }
   const user= await User.create({full_name,email,password});
   res.status(200).json({
     message: "user created",
@@ -77,54 +100,55 @@ export const createUser =async (req, res) => {
   });
   } catch(error)
   {
-    res.status(500).json({
-      message: "Internal server error",
-      success: false,
-      status: "error",
-      data: null,
-    });
+    next(error);
   }
 };
 
 
-export const updateUser = async(req, res) => {
+export const updateUser = async(req, res,next) => {
   try{
-    //User.findByIdAndUpdate(id<{full_name,email,password}>)
-  // const id  = req.params.userId;
-  const userId= req.params.userId;
-  const data = req.body;
+    const {full_name, email, password} = req.body;
+    const {userId} = req.params;
 
-  const updatedUser = await User.findByIdAndUpdate(userId, data, { new: true });
+    const user = await User.findByIdAndUpdate(userId,
+      {full_name, email, password},
+      {
+        returnDocument: "after",
+      }
+    );
+    if(!user){
+      next({
+        message:`user: ${userId} not found`,
+        statusCode:404,
+        status:"fail",
+        success:false,
+      });
+      return;
+    }
 
   res.status(200).json({
     message: `user: ${userId} updated`,
     success: true,
     status: "success",
-    data: updatedUser,
+    data: user,
   });
   } catch(error)
   {
-    res.status(500).json({
-      message: "Duplicate email found",
-      success: false,
-      status: "error",
-      data: null,
-    });
+    next(error);
   }
-
 };
 
-export const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res,next) => {
   try{
     const id = req.params.id;
     const user = await User.findByIdAndDelete(id);
     if(!user)
     {
-      res.status(404).json({
+      next({
         message: `user: ${id} not found`,
-        success: false,
+        statusCode:404,
         status: "fail",
-        data: null,
+        success: false,
       });
       return;
     }
@@ -136,11 +160,6 @@ export const deleteUser = async (req, res) => {
   });
   } catch(error)
   {
-    res.status(500).json({
-      message: "Internal server error",
-      success: false,
-      status: "error",
-      data: null,
-    });
+   next(error);
   }
 };

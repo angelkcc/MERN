@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 //schema
 //new mongoose.Schema(definition, options)
 
@@ -30,3 +31,4 @@ role:{
 
 
 export const User = mongoose.model("User", userSchema);
+export default User;

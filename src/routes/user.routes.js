@@ -8,9 +8,21 @@ import{
 } from "../controllers/users.js";
 
 const router = express.Router();
+//here we use middleware in routelevel, same syntax
+const mid1=(req,res,next)=>{
+    console.log("mid1 is working");
+    next();
+};
+//or we can do 
+router.use(mid1) ;
+const mid2=(req,res,next)=>{
+    console.log("mid2 is working");
+    next();
+};
+
 
 //get all users
-router.get("/", getAllUsers);
+router.get("/",mid1,mid2, getAllUsers);
 //static route should be defined before dynamic route, here all is a static route that gives all users
 router.get("/all", getUserById);
 //* get one user

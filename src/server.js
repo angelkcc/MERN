@@ -66,9 +66,10 @@ app.use((req,res,next)=>{
       success:false,
     });
   } else {
-    next();
+    next({message:"middleware4 error"});
   }
 });
+
 
 
 //while routing there should not be duplicate routes, if there is duplicate route then the first route will be executed and the second route will be ignored
@@ -94,6 +95,36 @@ server.listen(PORT, () => {
 app.use("/users", userRoutes);
 app.use("/products", productRoutes);
 app.use("/categories", categoryRoutes);
+
+//cannot  path not found
+app.use((req,res,next)=>{
+  next({
+    message:`cannot find ${req.method} on {req.path}`,
+    status:fail,
+    success:false,
+    statusCode:404,
+  });
+});
+
+//error handler middleware (always used at last because order for this doesnt matter)
+app.use((error,req,res,next)=>{
+  console.log("error is",error);
+
+  const message= error?.message??"internal server error";
+  const statusCode= error?.statusCode??"error";
+  const status= error?.status??"error";
+  const success= error?.success??false;
+
+  res.status(500).json({
+    message,
+    status,
+    success,
+    data: null,
+  });
+
+});
+
+
 
 //! req object
 //* req.path -> current req path : /users , /products
@@ -194,6 +225,7 @@ app.use("/categories", categoryRoutes);
 //now it becomes:req->auth-mid->controller[api] (the authorization logic is moved to middleware and the controller is only responsible for api logic)
 
 //types of middleware
-//1. application level middleware
+//1. application level middleware --only can be used in controllers--it is when we use app.use() or app.METHOD() to define middleware
 //2. route level middleware
-//3. error handler
+//3. error handler--(err,req,res,next)=>{}--it is used to handle errors in the application)
+
