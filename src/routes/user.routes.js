@@ -24,7 +24,7 @@ const mid2=(req,res,next)=>{
 //get all users
 router.get("/",mid1,mid2, getAllUsers);
 //static route should be defined before dynamic route, here all is a static route that gives all users
-router.get("/all", getUserById);
+//router.get("/all", getUserById);
 //* get one user
 // get user by id 1 , 2 ,3 , 40 and this is a dynamic route
 router.get("/:id", getUserById);

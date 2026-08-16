@@ -40,33 +40,47 @@ app.use(express.json()); //raw data =>parse[js obj]=>req.body={}
 });*/
 
 //middleware
-const middleware1=(req,res,next)=>{
-  console.log("middleware1 is working",req.path); //req path is for current request path
+// MIDDLEWARE 1
+const middleware1 = (req, res, next) => {
+  console.log("middleware1 is working", req.path);
   next();
-}; 
+};
+
 app.use(middleware1);
-app.use((req,res,next)=>{
+
+
+// MIDDLEWARE 2
+app.use((req, res, next) => {
   console.log("middleware2 is working");
- req.user={
-    name:"angel"
-  }
+
+  req.user = {
+    name: "angel"
+  };
+
   next();
 });
-app.use((req,res,next)=>{
+
+
+// MIDDLEWARE 3
+app.use((req, res, next) => {
   console.log("middleware3 is working");
-  console.log("user name is",req.user);
+  console.log("user name is", req.user);
   next();
 });
-app.use((req,res,next)=>{
+
+
+// MIDDLEWARE 4
+app.use((req, res, next) => {
   console.log("middleware4 is working");
-  console.log("user name is",req.user);
-  if(!req.user){
+  console.log("user name is", req.user);
+
+  if (!req.user) {
     res.status(401).json({
-      message:"unauthorized user",
-      success:false,
+      message: "unauthorized user",
+      success: false,
     });
   } else {
-    next({message:"middleware4 error"});
+    next();
   }
 });
 
@@ -97,31 +111,32 @@ app.use("/products", productRoutes);
 app.use("/categories", categoryRoutes);
 
 //cannot  path not found
-app.use((req,res,next)=>{
+// 404 HANDLER
+app.use((req, res, next) => {
   next({
-    message:`cannot find ${req.method} on {req.path}`,
-    status:fail,
-    success:false,
-    statusCode:404,
+    message: `cannot find ${req.method} on ${req.path}`,
+    status: "fail",
+    success: false,
+    statusCode: 404,
   });
 });
 
-//error handler middleware (always used at last because order for this doesnt matter)
-app.use((error,req,res,next)=>{
-  console.log("error is",error);
 
-  const message= error?.message??"internal server error";
-  const statusCode= error?.statusCode??"error";
-  const status= error?.status??"error";
-  const success= error?.success??false;
+// ERROR HANDLER
+app.use((error, req, res, next) => {
+  console.log("error is", error);
 
-  res.status(500).json({
+  const message = error?.message ?? "Internal server error";
+  const statusCode = error?.statusCode ?? 500;
+  const status = error?.status ?? "error";
+  const success = error?.success ?? false;
+
+  res.status(statusCode).json({
     message,
     status,
     success,
     data: null,
   });
-
 });
 
 
